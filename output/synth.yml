@@ -1,0 +1,309 @@
+Resources:
+  UploadStatusTable3FD3028B:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      AttributeDefinitions:
+        - AttributeName: id
+          AttributeType: S
+      BillingMode: PAY_PER_REQUEST
+      KeySchema:
+        - AttributeName: id
+          KeyType: HASH
+      TableName: upload-status
+    UpdateReplacePolicy: Retain
+    DeletionPolicy: Retain
+    Metadata:
+      aws:cdk:path: ServerlessApiStack/UploadStatusTable/Resource
+  GetUploadStatusFnServiceRole014082E7:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+        Version: "2012-10-17"
+      ManagedPolicyArns:
+        - Fn::Join:
+            - ""
+            - - "arn:"
+              - Ref: AWS::Partition
+              - :iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+    Metadata:
+      aws:cdk:path: ServerlessApiStack/GetUploadStatusFn/ServiceRole/Resource
+  GetUploadStatusFnServiceRoleDefaultPolicyCACDE014:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyDocument:
+        Statement:
+          - Action:
+              - dynamodb:BatchGetItem
+              - dynamodb:GetRecords
+              - dynamodb:GetShardIterator
+              - dynamodb:Query
+              - dynamodb:GetItem
+              - dynamodb:Scan
+              - dynamodb:ConditionCheckItem
+              - dynamodb:DescribeTable
+            Effect: Allow
+            Resource:
+              - Fn::GetAtt:
+                  - UploadStatusTable3FD3028B
+                  - Arn
+              - Ref: AWS::NoValue
+        Version: "2012-10-17"
+      PolicyName: GetUploadStatusFnServiceRoleDefaultPolicyCACDE014
+      Roles:
+        - Ref: GetUploadStatusFnServiceRole014082E7
+    Metadata:
+      aws:cdk:path: ServerlessApiStack/GetUploadStatusFn/ServiceRole/DefaultPolicy/Resource
+  GetUploadStatusFnFAB3BE99:
+    Type: AWS::Lambda::Function
+    Properties:
+      Code:
+        S3Bucket: cdk-hnb659fds-assets-650251698778-ap-northeast-1
+        S3Key: b40586d24d72685b64c9d83f7336c7df11aa34b777265acdf5840a6055c9731f.zip
+      Environment:
+        Variables:
+          UPLOAD_TABLE:
+            Ref: UploadStatusTable3FD3028B
+      FunctionName: get-upload-status
+      Handler: get-upload-status.handler
+      MemorySize: 128
+      Role:
+        Fn::GetAtt:
+          - GetUploadStatusFnServiceRole014082E7
+          - Arn
+      Runtime: nodejs18.x
+      Timeout: 5
+    DependsOn:
+      - GetUploadStatusFnServiceRoleDefaultPolicyCACDE014
+      - GetUploadStatusFnServiceRole014082E7
+    Metadata:
+      aws:cdk:path: ServerlessApiStack/GetUploadStatusFn/Resource
+      aws:asset:path: asset.b40586d24d72685b64c9d83f7336c7df11aa34b777265acdf5840a6055c9731f
+      aws:asset:is-bundled: false
+      aws:asset:property: Code
+  ServerlessApi21071D75:
+    Type: AWS::ApiGateway::RestApi
+    Properties:
+      Name: ServerlessDemoApi
+    Metadata:
+      aws:cdk:path: ServerlessApiStack/ServerlessApi/Resource
+  ServerlessApiCloudWatchRole38056DF6:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Principal:
+              Service: apigateway.amazonaws.com
+        Version: "2012-10-17"
+      ManagedPolicyArns:
+        - Fn::Join:
+            - ""
+            - - "arn:"
+              - Ref: AWS::Partition
+              - :iam::aws:policy/service-role/AmazonAPIGatewayPushToCloudWatchLogs
+    UpdateReplacePolicy: Retain
+    DeletionPolicy: Retain
+    Metadata:
+      aws:cdk:path: ServerlessApiStack/ServerlessApi/CloudWatchRole/Resource
+  ServerlessApiAccount46D9C997:
+    Type: AWS::ApiGateway::Account
+    Properties:
+      CloudWatchRoleArn:
+        Fn::GetAtt:
+          - ServerlessApiCloudWatchRole38056DF6
+          - Arn
+    DependsOn:
+      - ServerlessApi21071D75
+    UpdateReplacePolicy: Retain
+    DeletionPolicy: Retain
+    Metadata:
+      aws:cdk:path: ServerlessApiStack/ServerlessApi/Account
+  ServerlessApiDeployment5B47D3B0a079406a755178fb3a91a44c5e9c87fc:
+    Type: AWS::ApiGateway::Deployment
+    Properties:
+      Description: Automatically created by the RestApi construct
+      RestApiId:
+        Ref: ServerlessApi21071D75
+    DependsOn:
+      - ServerlessApigetuploadstatusGET5AC1BE8A
+      - ServerlessApigetuploadstatusOPTIONSAD3C4B5D
+      - ServerlessApigetuploadstatus5C76D0FC
+      - ServerlessApiOPTIONSA9BEED91
+    Metadata:
+      aws:cdk:path: ServerlessApiStack/ServerlessApi/Deployment/Resource
+  ServerlessApiDeploymentStagedev65B26E8A:
+    Type: AWS::ApiGateway::Stage
+    Properties:
+      DeploymentId:
+        Ref: ServerlessApiDeployment5B47D3B0a079406a755178fb3a91a44c5e9c87fc
+      RestApiId:
+        Ref: ServerlessApi21071D75
+      StageName: dev
+    DependsOn:
+      - ServerlessApiAccount46D9C997
+    Metadata:
+      aws:cdk:path: ServerlessApiStack/ServerlessApi/DeploymentStage.dev/Resource
+  ServerlessApiOPTIONSA9BEED91:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      ApiKeyRequired: false
+      AuthorizationType: NONE
+      HttpMethod: OPTIONS
+      Integration:
+        IntegrationResponses:
+          - ResponseParameters:
+              method.response.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,X-Amz-User-Agent'"
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+              method.response.header.Access-Control-Allow-Methods: "'OPTIONS,GET,PUT,POST,DELETE,PATCH,HEAD'"
+            StatusCode: "204"
+        RequestTemplates:
+          application/json: "{ statusCode: 200 }"
+        Type: MOCK
+      MethodResponses:
+        - ResponseParameters:
+            method.response.header.Access-Control-Allow-Headers: true
+            method.response.header.Access-Control-Allow-Origin: true
+            method.response.header.Access-Control-Allow-Methods: true
+          StatusCode: "204"
+      ResourceId:
+        Fn::GetAtt:
+          - ServerlessApi21071D75
+          - RootResourceId
+      RestApiId:
+        Ref: ServerlessApi21071D75
+    Metadata:
+      aws:cdk:path: ServerlessApiStack/ServerlessApi/Default/OPTIONS/Resource
+  ServerlessApigetuploadstatus5C76D0FC:
+    Type: AWS::ApiGateway::Resource
+    Properties:
+      ParentId:
+        Fn::GetAtt:
+          - ServerlessApi21071D75
+          - RootResourceId
+      PathPart: get-upload-status
+      RestApiId:
+        Ref: ServerlessApi21071D75
+    Metadata:
+      aws:cdk:path: ServerlessApiStack/ServerlessApi/Default/get-upload-status/Resource
+  ServerlessApigetuploadstatusOPTIONSAD3C4B5D:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      ApiKeyRequired: false
+      AuthorizationType: NONE
+      HttpMethod: OPTIONS
+      Integration:
+        IntegrationResponses:
+          - ResponseParameters:
+              method.response.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,X-Amz-User-Agent'"
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+              method.response.header.Access-Control-Allow-Methods: "'OPTIONS,GET,PUT,POST,DELETE,PATCH,HEAD'"
+            StatusCode: "204"
+        RequestTemplates:
+          application/json: "{ statusCode: 200 }"
+        Type: MOCK
+      MethodResponses:
+        - ResponseParameters:
+            method.response.header.Access-Control-Allow-Headers: true
+            method.response.header.Access-Control-Allow-Origin: true
+            method.response.header.Access-Control-Allow-Methods: true
+          StatusCode: "204"
+      ResourceId:
+        Ref: ServerlessApigetuploadstatus5C76D0FC
+      RestApiId:
+        Ref: ServerlessApi21071D75
+    Metadata:
+      aws:cdk:path: ServerlessApiStack/ServerlessApi/Default/get-upload-status/OPTIONS/Resource
+  ServerlessApigetuploadstatusGETApiPermissionServerlessApiStackServerlessApi6A97A36DGETgetuploadstatusB5E01415:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName:
+        Fn::GetAtt:
+          - GetUploadStatusFnFAB3BE99
+          - Arn
+      Principal: apigateway.amazonaws.com
+      SourceArn:
+        Fn::Join:
+          - ""
+          - - "arn:"
+            - Ref: AWS::Partition
+            - ":execute-api:ap-northeast-1:650251698778:"
+            - Ref: ServerlessApi21071D75
+            - /
+            - Ref: ServerlessApiDeploymentStagedev65B26E8A
+            - /GET/get-upload-status
+    Metadata:
+      aws:cdk:path: ServerlessApiStack/ServerlessApi/Default/get-upload-status/GET/ApiPermission.ServerlessApiStackServerlessApi6A97A36D.GET..get-upload-status
+  ServerlessApigetuploadstatusGETApiPermissionTestServerlessApiStackServerlessApi6A97A36DGETgetuploadstatusE932E3B9:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName:
+        Fn::GetAtt:
+          - GetUploadStatusFnFAB3BE99
+          - Arn
+      Principal: apigateway.amazonaws.com
+      SourceArn:
+        Fn::Join:
+          - ""
+          - - "arn:"
+            - Ref: AWS::Partition
+            - ":execute-api:ap-northeast-1:650251698778:"
+            - Ref: ServerlessApi21071D75
+            - /test-invoke-stage/GET/get-upload-status
+    Metadata:
+      aws:cdk:path: ServerlessApiStack/ServerlessApi/Default/get-upload-status/GET/ApiPermission.Test.ServerlessApiStackServerlessApi6A97A36D.GET..get-upload-status
+  ServerlessApigetuploadstatusGET5AC1BE8A:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      AuthorizationType: NONE
+      HttpMethod: GET
+      Integration:
+        IntegrationHttpMethod: POST
+        Type: AWS_PROXY
+        Uri:
+          Fn::Join:
+            - ""
+            - - "arn:"
+              - Ref: AWS::Partition
+              - :apigateway:ap-northeast-1:lambda:path/2015-03-31/functions/
+              - Fn::GetAtt:
+                  - GetUploadStatusFnFAB3BE99
+                  - Arn
+              - /invocations
+      ResourceId:
+        Ref: ServerlessApigetuploadstatus5C76D0FC
+      RestApiId:
+        Ref: ServerlessApi21071D75
+    Metadata:
+      aws:cdk:path: ServerlessApiStack/ServerlessApi/Default/get-upload-status/GET/Resource
+  CDKMetadata:
+    Type: AWS::CDK::Metadata
+    Properties:
+      Analytics: v2:deflate64:H4sIAAAAAAAA/02OQW+DMAyFf0vvwWvpDtuRbtptWkV3r0zi0RRIEHaGUMR/nwid2tP77Gc/O4fdyytsNzhypk2TtbaCeBLUjcKRz9FMDjtvKojfWLWk3n5cglm12FUGIX4Ep8V6t1iPfKShs8zWu1lZ7CCWft1PevSt1VOaSzQr3p+RmYShWETxHg5BNyQHZFLY2xqFRpwglsRS9DZl3bHQ2gcn6p361k8dOVm6D9VJsE4PrFAS+zBoSvGfJBdvFvNG/+7tSOJ5vrfTj0uQdfUy8xWkDzIr5w3BlZ9+8xx2z7DdXNnabAhObEdQrvoHU/uM2nUBAAA=
+    Metadata:
+      aws:cdk:path: ServerlessApiStack/CDKMetadata/Default
+Outputs:
+  ServerlessApiEndpoint39E2F4FD:
+    Value:
+      Fn::Join:
+        - ""
+        - - https://
+          - Ref: ServerlessApi21071D75
+          - .execute-api.ap-northeast-1.
+          - Ref: AWS::URLSuffix
+          - /
+          - Ref: ServerlessApiDeploymentStagedev65B26E8A
+          - /
+Parameters:
+  BootstrapVersion:
+    Type: AWS::SSM::Parameter::Value<String>
+    Default: /cdk-bootstrap/hnb659fds/version
+    Description: Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]
+

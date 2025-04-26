@@ -1,0 +1,18 @@
+{
+      "compilerOptions": {
+            "module": "ES2022",
+            "target": "ES2022",
+            "moduleResolution": "node",
+            "esModuleInterop": true,
+            "strict": true,
+            "outDir": "dist",
+            "skipLibCheck": true,
+            "types": [
+                  "node",
+                  "aws-lambda"
+            ]
+      },
+      "include": [
+            "src/**/*"
+      ]
+}

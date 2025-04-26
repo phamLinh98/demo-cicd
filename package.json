@@ -1,0 +1,35 @@
+{
+  "name": "demo",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "clean:lambda": "rm -rf src/build/lambda",
+    "build:lambda": "npm run clean:lambda && webpack",
+    "prebuild": "npm --prefix .. run build:lambda",
+    "build": "tsc",
+    "synth": "cdk synth --app 'npx ts-node --prefer-ts-exts cdk/bin/app.ts' > output/synth.yml",
+    "deploy": "cdk deploy --app 'npx ts-node --prefer-ts-exts cdk/bin/app.ts'",
+    "destroy": "cdk destroy --app 'npx ts-node --prefer-ts-exts cdk/bin/app.ts'",
+    "pipline": "npm run build:lambda && npm run synth && npm run deploy"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.149",
+    "@types/eslint": "^9.6.1",
+    "@types/eslint-scope": "^3.7.7",
+    "@types/estree": "^1.0.7",
+    "@types/node": "^22.14.1",
+    "ts-loader": "^9.5.2",
+    "ts-node": "^10.9.2",
+    "webpack": "^5.99.6",
+    "webpack-cli": "^6.0.1"
+  },
+  "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.788.0",
+    "glob": "^11.0.1"
+  }
+}
