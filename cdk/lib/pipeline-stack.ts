@@ -55,16 +55,22 @@ export class PipelineStack extends Stack {
                               'ls -la',
                               'ls -la src/build/lambda',
                               'ls -la cdk',
-                              'echo "export CDK_DEFAULT_ACCOUNT=$CDK_DEFAULT_ACCOUNT" >> .env',
-                              'echo "export CDK_DEFAULT_REGION=$CDK_DEFAULT_REGION" >> .env',
+                              // 'echo "export CDK_DEFAULT_ACCOUNT=$CDK_DEFAULT_ACCOUNT" >> .env',
+                              // 'echo "export CDK_DEFAULT_REGION=$CDK_DEFAULT_REGION" >> .env',
                               // print env
-                              'cat .env',
+                              // 'cat .env',
                               // "npx cdk synth --app 'npx ts-node --prefer-ts-exts cdk/bin/app.ts' --output cdk/cdk.out",
                               "npx cdk deploy --all --require-approval never --app 'npx ts-node --prefer-ts-exts cdk/bin/app.ts'",
                               'ls -la',
                         ],
                         primaryOutputDirectory: 'cdk/cdk.out',
                         rolePolicyStatements: [
+                              
+                              // cdk bootstrap \
+                              // --qualifier hnb659fds \
+                              // --cloudformation-execution-policies arn:aws:iam::aws:policy/AdministratorAccess \
+                              // 650251698778/ap-northeast-1
+
                               // 1) Đọc bootstrap version
                               new iam.PolicyStatement({
                                     actions: ['ssm:GetParameter'],
