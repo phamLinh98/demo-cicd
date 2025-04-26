@@ -10,6 +10,14 @@ export class ApiStack extends Stack {
   constructor(scope: Construct, id: string, props?: StackProps) {
     super(scope, id, props);
 
+    const account = process.env.CDK_DEFAULT_ACCOUNT;
+    const region = process.env.CDK_DEFAULT_REGION;
+
+    // Validate môi trường
+    if (!account || !region) {
+      throw new Error('ApiStack Environment variables CDK_DEFAULT_ACCOUNT and CDK_DEFAULT_REGION are required');
+    }
+
     /* DynamoDB tables */
     // const userTable = new dynamodb.Table(this, "UserTable", {
     //   partitionKey: { name: "id", type: dynamodb.AttributeType.STRING },

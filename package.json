@@ -11,7 +11,7 @@
     "synth": "cdk synth --app 'npx ts-node --prefer-ts-exts cdk/bin/app.ts' > output/synth.yml",
     "deploy": "cdk deploy --app 'npx ts-node --prefer-ts-exts cdk/bin/app.ts'",
     "destroy": "cdk destroy --app 'npx ts-node --prefer-ts-exts cdk/bin/app.ts'",
-    "cicd": "npx cdk deploy --app 'npx ts-node --prefer-ts-exts cdk/bin/app.ts' PipelineStack",
+    "cicd": "npx cdk deploy --app 'npx ts-node --prefer-ts-exts cdk/bin/pipeline.ts' PipelineStack",
     "pipline": "npm run build:lambda && npm run synth && npm run deploy"
   },
   "keywords": [],
