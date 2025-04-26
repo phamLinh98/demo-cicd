@@ -13,6 +13,9 @@ export class ApiStack extends Stack {
     const account = process.env.CDK_DEFAULT_ACCOUNT;
     const region = process.env.CDK_DEFAULT_REGION;
 
+    console.log('ApiStack CDK_DEFAULT_ACCOUNT:', account);
+    console.log('ApiStack CDK_DEFAULT_REGION:', region);
+
     // Validate môi trường
     if (!account || !region) {
       throw new Error('ApiStack Environment variables CDK_DEFAULT_ACCOUNT and CDK_DEFAULT_REGION are required');

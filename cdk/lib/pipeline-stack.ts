@@ -57,6 +57,8 @@ export class PipelineStack extends Stack {
                               'ls -la cdk',
                               'echo "export CDK_DEFAULT_ACCOUNT=$CDK_DEFAULT_ACCOUNT" >> .env',
                               'echo "export CDK_DEFAULT_REGION=$CDK_DEFAULT_REGION" >> .env',
+                              // print env
+                              'cat .env',
                               // "npx cdk synth --app 'npx ts-node --prefer-ts-exts cdk/bin/app.ts' --output cdk/cdk.out",
                               "npx cdk deploy --all --require-approval never --app 'npx ts-node --prefer-ts-exts cdk/bin/app.ts'",
                               'ls -la',
