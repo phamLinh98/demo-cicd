@@ -3,3 +3,4 @@ cdk.out
 src/build
 .idea
 .DS_Store
+.env

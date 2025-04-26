@@ -63,7 +63,7 @@ Resources:
     Properties:
       Code:
         S3Bucket: cdk-hnb659fds-assets-650251698778-ap-northeast-1
-        S3Key: b40586d24d72685b64c9d83f7336c7df11aa34b777265acdf5840a6055c9731f.zip
+        S3Key: e8b92d083f1b24299351ca321deb2c5bc3b9d06c9d28a28c4324ffda474ebe9d.zip
       Environment:
         Variables:
           UPLOAD_TABLE:
@@ -82,7 +82,7 @@ Resources:
       - GetUploadStatusFnServiceRole014082E7
     Metadata:
       aws:cdk:path: ServerlessApiStack/GetUploadStatusFn/Resource
-      aws:asset:path: asset.b40586d24d72685b64c9d83f7336c7df11aa34b777265acdf5840a6055c9731f
+      aws:asset:path: asset.e8b92d083f1b24299351ca321deb2c5bc3b9d06c9d28a28c4324ffda474ebe9d
       aws:asset:is-bundled: false
       aws:asset:property: Code
   ServerlessApi21071D75:

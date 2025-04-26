@@ -1,14 +1,24 @@
 #!/usr/bin/env node
 import "source-map-support/register";
 import { App } from "aws-cdk-lib";
-import { ApiStack } from "../lib/api-stack";
+// import { ApiStack } from "../lib/api-stack";
+import { PipelineStack } from "../lib/pipeline-stack";
+import 'dotenv/config';   // tự load .env trong cwd
+
+// const app = new App();
+// new ApiStack(app, "ServerlessApiStack", {
+//   /* env: { account: process.env.CDK_DEFAULT_ACCOUNT,
+//            region: process.env.CDK_DEFAULT_REGION } */
+//   env: {
+//     account: "650251698778",
+//     region: "ap-northeast-1",
+//   },
+// });
 
 const app = new App();
-new ApiStack(app, "ServerlessApiStack", {
-  /* env: { account: process.env.CDK_DEFAULT_ACCOUNT,
-           region: process.env.CDK_DEFAULT_REGION } */
+new PipelineStack(app, 'PipelineStack', {
   env: {
-    account: "650251698778",
-    region: "ap-northeast-1",
+    account: process.env.CDK_DEFAULT_ACCOUNT,
+    region: process.env.CDK_DEFAULT_REGION,
   },
 });
