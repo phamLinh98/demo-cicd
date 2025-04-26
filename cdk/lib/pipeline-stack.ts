@@ -5,16 +5,18 @@ import {
       CodePipelineSource,
       CodeBuildStep,
 } from 'aws-cdk-lib/pipelines';
+import * as iam from 'aws-cdk-lib/aws-iam';
+
 import { ApiStack } from './api-stack';
 
 import 'dotenv/config';   // tự load .env trong cwd
 
-export class ApiDeployStage extends Stage {
-      constructor(scope: Construct, id: string, props?: StageProps) {
-            super(scope, id, props);
-            new ApiStack(this, 'ServerlessApiStack', props);
-      }
-}
+// export class ApiDeployStage extends Stage {
+//       constructor(scope: Construct, id: string, props?: StageProps) {
+//             super(scope, id, props);
+//             new ApiStack(this, 'ServerlessApiStack', props);
+//       }
+// }
 
 export class PipelineStack extends Stack {
       constructor(scope: Construct, id: string, props?: StackProps) {
@@ -56,17 +58,33 @@ export class PipelineStack extends Stack {
                               'echo "export CDK_DEFAULT_ACCOUNT=$CDK_DEFAULT_ACCOUNT" >> .env',
                               'echo "export CDK_DEFAULT_REGION=$CDK_DEFAULT_REGION" >> .env',
                               // "npx cdk synth --app 'npx ts-node --prefer-ts-exts cdk/bin/app.ts' --output cdk/cdk.out",
-                              "npx cdk deploy --app 'npx ts-node --prefer-ts-exts cdk/bin/app.ts' --output cdk/cdk.out",
+                              "npx cdk deploy --all --require-approval never --app 'npx ts-node --prefer-ts-exts cdk/bin/app.ts'",
                               'ls -la',
                         ],
                         primaryOutputDirectory: 'cdk/cdk.out',
+                        rolePolicyStatements: [
+                              // 1) Đọc bootstrap version
+                              new iam.PolicyStatement({
+                                    actions: ['ssm:GetParameter'],
+                                    resources: [
+                                          `arn:aws:ssm:${region}:${account}:parameter/cdk-bootstrap/hnb659fds/version`,
+                                    ],
+                              }),
+                              // 2) Được assume toàn bộ role CDK bootstrap
+                              new iam.PolicyStatement({
+                                    actions: ['sts:AssumeRole'],
+                                    resources: [
+                                          `arn:aws:iam::${account}:role/cdk-hnb659fds-*`,
+                                    ],
+                              }),
+                        ],
                   }),
             });
 
-            pipeline.addStage(
-                  new ApiDeployStage(this, 'Prod', {
-                        env: { account, region },
-                  }),
-            );
+            // pipeline.addStage(
+            //       new ApiDeployStage(this, 'Prod', {
+            //             env: { account, region },
+            //       }),
+            // );
       }
 }
